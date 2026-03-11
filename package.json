@@ -1,0 +1,15 @@
+{
+  "name": "admin-geo-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "weweb serve",
+    "build": "weweb build --name=admin-geo-dashboard --type=element"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@weweb/cli": "^3.8.0"
+  }
+}
