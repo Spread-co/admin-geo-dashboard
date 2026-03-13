@@ -360,6 +360,7 @@ export default {
     const regionMemberCount = ref(0);
     const waitlistExpanded = ref(false);
     const waitlistEntries = ref([]);
+    const lastGeoJSON = ref(null); // stores last raw GeoJSON for safe re-render
 
     // ── Computed ──────────────────────────────────────
     const isEditorMode = computed(() => {
@@ -480,6 +481,8 @@ export default {
           link.id = 'leaflet-css';
           link.rel = 'stylesheet';
           link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+          link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+          link.crossOrigin = 'anonymous';
           doc.head.appendChild(link);
         }
         // Load Leaflet UMD via script tag (WeWeb webpack cannot handle ESM externals)
@@ -488,6 +491,8 @@ export default {
           if (doc.querySelector(`script[src="${src}"]`)) { resolve(); return; }
           const script = doc.createElement('script');
           script.src = src;
+          script.integrity = 'sha256-20nQCchB9co0/54tZwql2P/O3rDBIfqiNnJfKBmX3B4=';
+          script.crossOrigin = 'anonymous';
           script.onload = resolve;
           script.onerror = () => reject(new Error('Leaflet script failed to load'));
           doc.head.appendChild(script);
@@ -553,7 +558,15 @@ export default {
         renderGeoJSON(geojson, level);
       } catch (err) {
         console.error('geo-boundaries error:', err);
-        // Don't show error toast for boundary fetches — map still usable
+        const status = err?.status;
+        if (status === 403) {
+          showError('Map data: permission denied — ensure logistics.manage_caps role is assigned');
+        } else if (status === 401) {
+          showError('Map data: authentication error — please refresh the page');
+        } else if (status >= 500) {
+          showError('Map data API error — try refreshing');
+        }
+        // Network errors: leave map as-is (no toast, non-actionable)
       }
     }
 
@@ -586,6 +599,7 @@ export default {
 
       if (!geojson || !geojson.features || !geojson.features.length) return;
 
+      lastGeoJSON.value = geojson; // store raw GeoJSON for safe re-render after data refresh
       geoLayer = L.geoJSON(geojson, {
         style: (feature) => styleFeature(feature, level),
         onEachFeature: (feature, layer) => {
@@ -637,8 +651,8 @@ export default {
       const opId = props.operational_id;
       if (!opId) return null;
 
-      if (level === 2) {
-        // Region level — direct match
+      if (level === 2 || level === 3) {
+        // Region level (2) and postcode level (3) share the same operational_id space
         const u = uMap[opId];
         if (!u) return null;
         return {
@@ -747,8 +761,8 @@ export default {
         });
         await refreshCapacityData();
         // Re-colour the map
-        if (geoLayer && lastLevel !== null) {
-          renderGeoJSON(geoLayer.toGeoJSON(), lastLevel);
+        if (lastGeoJSON.value && lastLevel !== null) {
+          renderGeoJSON(lastGeoJSON.value, lastLevel);
         }
       } catch (err) {
         showError(err.message || 'Failed to toggle region');
@@ -992,6 +1006,14 @@ export default {
     watch(() => props.content?.pollingInterval, () => {
       stopPolling();
       startPolling();
+    });
+
+    // ── Invalidate map size when detail panel opens / closes ─────────────────
+    // The CSS grid shifts map width when the panel slides in; Leaflet must be
+    // notified to recalculate tile positions, otherwise a grey gap appears.
+    watch(selectedRegion, () => {
+      if (!map) return;
+      nextTick(() => map.invalidateSize());
     });
 
     return {
