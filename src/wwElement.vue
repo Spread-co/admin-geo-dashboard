@@ -1,5 +1,5 @@
 <template>
-  <div class="spread-geo" :style="{ '--map-h': mapHeightPx }">
+  <div v-if="!content.portalTarget || content.portalTarget === 'admin'" class="spread-geo" :style="{ '--map-h': mapHeightPx }">
     <!-- ── Toolbar ────────────────────────────────────── -->
     <div class="spread-geo__toolbar">
       <h2 class="spread-geo__title">Capacity Map</h2>
