@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "weweb serve",
-    "build": "weweb build --name=admin-geo-dashboard --type=element"
+    "build": "weweb build -- name=admin-geo-dashboard type=element"
   },
   "dependencies": {
     "leaflet": "^1.9.4"
