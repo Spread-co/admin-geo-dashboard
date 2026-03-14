@@ -1,5 +1,13 @@
 <template>
   <div v-if="!content.portalTarget || content.portalTarget === 'admin'" class="spread-geo" :style="{ '--map-h': mapHeightPx }">
+    <div v-if="permissionGranted !== true" class="spread-perm-overlay" style="position:absolute;inset:0;z-index:9999;background:var(--spread-cream,#FBFAF8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px;text-align:center;">
+      <div v-if="permissionGranted === null" style="width:24px;height:24px;border:3px solid rgba(0,0,0,0.1);border-top-color:var(--spread-accent,#CE6632);border-radius:50%;animation:spread-perm-spin 0.7s linear infinite;"></div>
+      <template v-else>
+        <span style="font-size:32px;line-height:1;">🔒</span>
+        <strong style="font-size:15px;font-weight:700;color:var(--spread-black,#141414);margin:0;">Access denied</strong>
+        <span style="font-size:13px;color:var(--spread-mid-grey,#6B7280);">You don't have permission to view this area.</span>
+      </template>
+    </div>
     <!-- ── Toolbar ────────────────────────────────────── -->
     <div class="spread-geo__toolbar">
       <h2 class="spread-geo__title">Capacity Map</h2>
@@ -1017,6 +1025,7 @@ export default {
     });
 
     return {
+      permissionGranted,
       mapContainer,
       loading,
       actionLoading,
@@ -1081,6 +1090,7 @@ export default {
   box-sizing: border-box;
   font-family: var(--spread-font);
   color: var(--spread-black);
+  position: relative;
 }
 
 .spread-geo *, .spread-geo *::before, .spread-geo *::after {
@@ -1688,4 +1698,5 @@ export default {
     padding: 4px 6px;
   }
 }
+@keyframes spread-perm-spin { to { transform: rotate(360deg); } }
 </style>
