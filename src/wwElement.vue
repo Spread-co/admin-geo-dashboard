@@ -1091,6 +1091,8 @@ export default {
   font-family: var(--spread-font);
   color: var(--spread-black);
   position: relative;
+  max-width: 1440px;
+  margin-inline: auto;
 }
 
 .spread-geo *, .spread-geo *::before, .spread-geo *::after {
@@ -1697,6 +1699,9 @@ export default {
     font-size: 10px;
     padding: 4px 6px;
   }
+}
+@media (min-width: 480px) {
+  .spread-geo__toolbar { gap: 10px; }
 }
 @keyframes spread-perm-spin { to { transform: rotate(360deg); } }
 </style>
