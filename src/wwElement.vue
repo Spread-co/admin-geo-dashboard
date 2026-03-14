@@ -351,6 +351,7 @@ export default {
     }
 
     // ── Reactive state ────────────────────────────────
+    const permissionGranted = ref(null);
     const loading = ref(false);
     const actionLoading = ref(false);
     const errorMsg = ref(null);
@@ -977,6 +978,26 @@ export default {
         pollTimer = null;
       }
     }
+
+    // ── Role guard ────────────────────────────────────
+    const ALLOWED_ROLES = ['founder', 'platform_admin', 'regional_manager', 'country_manager'];
+    async function checkAccess() {
+      const t = props.content?.accessToken, u = props.content?.userId,
+            url = props.content?.supabaseUrl, k = props.content?.supabaseAnonKey;
+      if (!t || !u || !url || !k) { permissionGranted.value = false; return; }
+      try {
+        const results = await Promise.all(ALLOWED_ROLES.map(role =>
+          fetch(`${url}/rest/v1/rpc/has_role`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: k, Authorization: `Bearer ${t}` },
+            body: JSON.stringify({ p_user_id: u, p_role_key: role }),
+          }).then(r => r.ok ? r.json() : false)
+        ));
+        permissionGranted.value = results.some(Boolean);
+      } catch { permissionGranted.value = false; }
+    }
+
+    watch(() => props.content?.accessToken, t => t ? checkAccess() : (permissionGranted.value = false), { immediate: true });
 
     // ── Lifecycle ─────────────────────────────────────
     const mapContainer = ref(null);
