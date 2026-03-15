@@ -58,7 +58,7 @@
         <div v-if="selectedRegion" class="spread-geo__panel">
           <div class="spread-geo__panel-header">
             <h3 class="spread-geo__panel-title">{{ selectedRegion.region_name }}</h3>
-            <button class="spread-geo__panel-close" @click="closePanel">&times;</button>
+            <button class="spread-geo__panel-close" @click="closePanel" aria-label="Close" title="Close">&times;</button>
           </div>
           <div class="spread-geo__panel-body">
             <!-- Status badge -->
@@ -110,6 +110,7 @@
                   v-if="waitlistEntries.length"
                   class="spread-geo__expand-btn"
                   @click="waitlistExpanded = !waitlistExpanded"
+                  :title="waitlistExpanded ? 'Collapse waitlist' : 'Expand waitlist'"
                 >{{ waitlistExpanded ? '▲' : '▼' }}</button>
               </span>
             </div>
@@ -165,7 +166,7 @@
     <transition name="spread-geo__fade">
       <div v-if="errorMsg" class="spread-geo__toast spread-geo__toast--error">
         {{ errorMsg }}
-        <button class="spread-geo__toast-close" @click="errorMsg = null">&times;</button>
+        <button class="spread-geo__toast-close" @click="errorMsg = null" aria-label="Dismiss error">&times;</button>
       </div>
     </transition>
 
@@ -175,7 +176,7 @@
         <div class="spread-geo__modal">
           <div class="spread-geo__modal-header">
             <h3 class="spread-geo__modal-title">Activate Region</h3>
-            <button class="spread-geo__panel-close" @click="showActivateModal = false">&times;</button>
+            <button class="spread-geo__panel-close" @click="showActivateModal = false" aria-label="Close" title="Close">&times;</button>
           </div>
           <div class="spread-geo__modal-body" v-if="activateRegionData">
             <p class="spread-geo__modal-text">
@@ -1725,4 +1726,29 @@ export default {
   .spread-geo__toolbar { gap: 10px; }
 }
 @keyframes spread-perm-spin { to { transform: rotate(360deg); } }
+
+/* ── Dark mode ─────────────────────────────────────────────────────── */
+:global(html.dark) .spread-geo {
+  background: #000000;
+  color: #f5f0eb;
+  --spread-cream: #18181b;
+  --spread-border: rgba(230, 216, 202, 0.12);
+  --spread-text-primary: #f5f0eb;
+  --spread-text-secondary: rgba(230, 216, 202, 0.65);
+  --spread-text-muted: rgba(230, 216, 202, 0.4);
+}
+:global(html.dark) .spread-geo__card,
+:global(html.dark) .spread-geo__panel { background: #18181b; border-color: rgba(230,216,202,0.12); }
+:global(html.dark) .spread-geo__toolbar { background: #18181b; border-color: rgba(230,216,202,0.1); }
+:global(html.dark) .spread-geo__select { background: #160c11; border-color: rgba(230,216,202,0.2); color: #f5f0eb; }
+:global(html.dark) .spread-geo__heading { color: #f5f0eb; }
+:global(html.dark) .spread-geo__stat-label { color: rgba(230,216,202,0.5); }
+:global(html.dark) .spread-geo__stat-val { color: #f5f0eb; }
+:global(html.dark) .spread-geo__region-name { color: #f5f0eb; }
+:global(html.dark) .spread-geo__region-meta { color: rgba(230,216,202,0.5); }
+:global(html.dark) .spread-geo__divider { border-color: rgba(230,216,202,0.08); }
+:global(html.dark) .spread-geo__badge--active { background: rgba(74,222,128,0.12); color: #4ade80; }
+:global(html.dark) .spread-geo__badge--inactive { background: rgba(230,216,202,0.08); color: rgba(230,216,202,0.5); }
+:global(html.dark) .spread-geo__progress-track { background: rgba(230,216,202,0.08); }
+:global(html.dark) .spread-geo__progress-fill { background: #ce6632; }
 </style>
