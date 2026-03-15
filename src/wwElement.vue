@@ -1730,21 +1730,21 @@ export default {
 /* ── Dark mode ─────────────────────────────────────────────────────── */
 :global(html.dark) .spread-geo {
   background: #000000;
-  color: #f5f0eb;
+  color: #e6d8ca;
   --spread-cream: #18181b;
   --spread-border: rgba(230, 216, 202, 0.12);
-  --spread-text-primary: #f5f0eb;
+  --spread-text-primary: #e6d8ca;
   --spread-text-secondary: rgba(230, 216, 202, 0.65);
   --spread-text-muted: rgba(230, 216, 202, 0.4);
 }
 :global(html.dark) .spread-geo__card,
 :global(html.dark) .spread-geo__panel { background: #18181b; border-color: rgba(230,216,202,0.12); }
 :global(html.dark) .spread-geo__toolbar { background: #18181b; border-color: rgba(230,216,202,0.1); }
-:global(html.dark) .spread-geo__select { background: #160c11; border-color: rgba(230,216,202,0.2); color: #f5f0eb; }
-:global(html.dark) .spread-geo__heading { color: #f5f0eb; }
+:global(html.dark) .spread-geo__select { background: #160c11; border-color: rgba(230,216,202,0.2); color: #e6d8ca; }
+:global(html.dark) .spread-geo__heading { color: #e6d8ca; }
 :global(html.dark) .spread-geo__stat-label { color: rgba(230,216,202,0.5); }
-:global(html.dark) .spread-geo__stat-val { color: #f5f0eb; }
-:global(html.dark) .spread-geo__region-name { color: #f5f0eb; }
+:global(html.dark) .spread-geo__stat-val { color: #e6d8ca; }
+:global(html.dark) .spread-geo__region-name { color: #e6d8ca; }
 :global(html.dark) .spread-geo__region-meta { color: rgba(230,216,202,0.5); }
 :global(html.dark) .spread-geo__divider { border-color: rgba(230,216,202,0.08); }
 :global(html.dark) .spread-geo__badge--active { background: rgba(74,222,128,0.12); color: #4ade80; }
